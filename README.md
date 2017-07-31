@@ -41,3 +41,13 @@ Andres Löh, Conor McBride and Wouter Swierstra
 http://www.andres-loeh.de/LambdaPi/LambdaPi.pdf
 ```
 
+- Linear types
+
+```
+'Use-Once' Variables and Linear Objects -- Storage Management, Reflection and Multi-Threading
+http://www.pipeline.com/~hbaker1/Use1Var.html
+
+A Brief Introduction to Linear Programming
+https://www.courses.psu.edu/for/for466w_mem14/Ch11/HTML/Sec1/ch11sec1.htm
+```
+
