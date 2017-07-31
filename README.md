@@ -1,7 +1,10 @@
 # lambdacube
+
 Implementation Lambda Calculus with other Type system: from untyped lambda up to lambda with dependency typed.
 
 It's research project which aims to study various types systems.
+
+![alt lambda_cube.png](https://upload.wikimedia.org/wikipedia/commons/1/19/Lambda_cube.png)
 
 ## Goals:
 
