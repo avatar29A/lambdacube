@@ -1,6 +1,6 @@
 # lambdacube
 
-Implementation Lambda Calculus with other Type system: from untyped lambda up to lambda with dependency typed.
+Implementation Lambda Calculus with various type systems: from simple type lambda up to lambda with dependency types.
 
 It's research project which aims to study various types systems.
 
