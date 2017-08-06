@@ -27,7 +27,6 @@ const (
 
 type LambdaTerm interface {
 	Kind() TermKind
-	Print()
 }
 
 // Term ...
@@ -39,35 +38,15 @@ func (t Term) Kind() TermKind {
 	return t.kind
 }
 
-func (t Term) Print() {
-	panic("Not implemented")
-}
-
-// Expression correspond to expression from BNF
-type Expression struct {
-	Term
-	Terms []LambdaTerm
-}
-
-func (e Expression) Print() {
-	recursionTermPrint(e, 0)
-}
-
-func NewExpression(terms ...LambdaTerm) LambdaTerm {
-	expr := Expression{Term{kind: ExpressionKind}, terms}
-
-	return expr
-}
-
 // Func correspond to func from BNF
 type Func struct {
 	Term
 	Var  Name
-	Body Expression
+	Body LambdaTerm
 }
 
-func NewFunc(varName string, body LambdaTerm) LambdaTerm {
-	f := Func{Term{FuncKind}, NewName(varName).(Name), body.(Expression)}
+func NewFunc(varName string, body LambdaTerm) Func {
+	f := Func{Term{FuncKind}, NewName(varName), body}
 
 	return f
 }
@@ -78,7 +57,7 @@ type Name struct {
 	Name string "contains variable's name"
 }
 
-func NewName(name string) LambdaTerm {
+func NewName(name string) Name {
 	n := Name{Term{NameKind}, name}
 
 	return n
@@ -90,10 +69,14 @@ type Application struct {
 	Right LambdaTerm
 }
 
-func NewApplication(left, right LambdaTerm) LambdaTerm {
+func NewApplication(left, right LambdaTerm) Application {
 	app := Application{Term{ApplicationKind}, left, right}
 
 	return app
+}
+
+func PrintLambda(t LambdaTerm) {
+	recursionTermPrint(t, 0)
 }
 
 func recursionTermPrint(t LambdaTerm, level int) {
@@ -101,20 +84,19 @@ func recursionTermPrint(t LambdaTerm, level int) {
 	switch t.Kind() {
 	default:
 		fmt.Printf("%s%s | %v | level: %d\n", tab, "unknown term", t, level)
-	case ExpressionKind:
-		for _, expr := range t.(Expression).Terms {
-			recursionTermPrint(expr, level+1)
-		}
 	case NameKind:
 		fmt.Println(tab, t.(Name).Name)
 	case ApplicationKind:
 		app := t.(Application)
+		fmt.Print("(")
 		recursionTermPrint(app.Left, level)
 		recursionTermPrint(app.Right, level)
+		fmt.Print(")")
 	case FuncKind:
 		f := t.(Func)
-		fmt.Println(tab, "lambda", f.Var.Name, ".")
+		fmt.Println(tab, "(lambda", f.Var.Name, ".")
 		recursionTermPrint(f.Body, level+1)
+		fmt.Print(")")
 	}
 }
 

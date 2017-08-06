@@ -1,1 +1,5 @@
 package untyped
+
+func IdentityTest() {
+
+}
