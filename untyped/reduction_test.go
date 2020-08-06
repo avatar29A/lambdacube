@@ -1,28 +1,38 @@
 package untyped
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
-
-	. "github.com/smartystreets/goconvey/convey"
 )
 
-func SubstitutionTest(t *testing.T) {
+type testCase struct {
+	name     Name
+	expr     LambdaTerm
+	apply    LambdaTerm
+	expected LambdaTerm
+}
 
-	Convey("Identity: (lambda x.x z) => z", t, func() {
-		id := NewFunc("x", NewName("x"))
+func TestSubstitution(t *testing.T) {
 
-		z := NewName("z")
-		body := Substitution(id.Var, id.Body, z)
+	cases := []testCase{
+		{
+			name:     NewName("x"),
+			expr:     NewFunc("x", NewName("x")), // Identity: (lambda x.x z) => z,
+			apply:    NewName("z"),
+			expected: NewName("z"),
+		},
 
-		So(z, ShouldResemble, body)
-	})
+		{
+			name:     NewName("selfApply"),
+			expr:     NewFunc("s", NewApplication(NewName("s"), NewName("s"))), // Self apply: ((lambda s . (s s))(lambda s . (s s)))
+			apply:    NewFunc("s", NewApplication(NewName("s"), NewName("s"))),
+			expected: NewFunc("s", NewApplication(NewName("s"), NewName("s"))),
+		},
+	}
 
-	Convey("Self apply: ((lambda s . (s s))(lambda s . (s s))) ", t, func() {
-		selfApply := NewFunc("s", NewApplication(NewName("s"), NewName("s")))
+	for _, test := range cases {
+		result := Substitution(test.name, test.expr, test.apply)
 
-		_ = Substitution(selfApply.Var, selfApply.Body, selfApply)
-
-		So(true, ShouldBeFalse)
-		So(selfApply, ShouldResemble, "a")
-	})
+		assert.ObjectsAreEqual(test.expected, result)
+	}
 }
